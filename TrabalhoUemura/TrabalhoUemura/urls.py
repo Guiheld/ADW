@@ -29,4 +29,5 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('auth/cadastro/', views.cadastro, name='cadastro'),
     path('auth/login/', views.login_view, name='login'),
+    path('meus_livros/', views.meus_livros, name='meus_livros'),
 ]

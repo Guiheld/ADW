@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .backupManager import backupUsuariosCSV
-from .models import Usuarios
+from .models import Usuarios, Livros
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse
@@ -16,11 +16,12 @@ from django.urls import reverse
 # Arquivo responsável por definir as regras de negócio do app. Vulgo ACTION.
 # E onde está o html para ser exibido depois.
 
-# Create your views here.
 
-# Verifica a integridade do banco de dados a partir dos backups csv
-def checarBackUp():
+def checarBackUp(): # Verifica a integridade do banco de dados a partir dos backups csv
     backupUsuariosCSV.verificaIntegridadeUsuarios()
+
+#----------------------------------------------------------------------------------------------------
+#   Processo de autenticacao
 
 def home(request):
     checarBackUp()
@@ -62,7 +63,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             # Armazena o URL de destino na sessão
-            request.session['redirect_url'] = request.POST.get('next', reverse('definir_tarefas'))
+            request.session['redirect_url'] = request.POST.get('next', reverse('meus_livros'))
 
             return HttpResponseRedirect(request.session['redirect_url'])
         else:
@@ -70,4 +71,11 @@ def login_view(request):
             return render(request, 'auth/login.html')
 
 #----------------------------------------------------------------------------------------------------
-#config bloco de tarefas
+#   Meus Livros
+
+@login_required(login_url='/auth/login/')
+def meus_livros(request):
+    checarBackUp()
+    usuario = Usuarios.objects.get(id_usuario=request.user.id)
+    livros = Livros.objects.filter(usuarioDono=usuario)
+    return render(request, 'meus_livros.html', {'livros': livros, 'usuario' : usuario})

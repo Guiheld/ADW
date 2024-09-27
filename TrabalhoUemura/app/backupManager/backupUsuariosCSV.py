@@ -1,5 +1,6 @@
 import os
 from traceback import print_exception
+from django.contrib.auth.models import User
 
 import csv
 
@@ -44,9 +45,10 @@ def verificaIntegridadeUsuarios():
             reader = csv.reader(file)
             header = next(reader)
             for row in reader:
-                nome = row[1] #nome de usuario eh tao unico quanto id, pois o nome tambem deve ser unico
+                usuario_id = row[0]
+                nome = row[1]
 
-                if not usuarios.filter(nome=nome).exists():
+                if not usuarios.filter(nome=nome).exists() or not usuarios.filter(id_usuario=usuario_id).exists():
                     print("Banco de dados corrompido: restaurando usuarios do backup local...")
                     restaurarBancoDeDadosUsuarios()
                     atualizaBackupUsuarios()
@@ -70,6 +72,9 @@ def restaurarBancoDeDadosUsuarios():
                 email = row[2]
                 senha = row[3]
                 Usuarios(usuario_id, nome, email, senha).save()
+                user_django = User(username=nome, email=email)  # cadastra user padrao do django
+                user_django.set_password(senha)
+                user_django.save()
             print("Banco de dados restaurado com sucesso")
 
     except Exception as e:

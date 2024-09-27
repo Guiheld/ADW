@@ -30,6 +30,7 @@ class Livros(models.Model):
     autor = models.TextField(max_length=250)
     ano_publicacao = models.IntegerField()
     preco = models.FloatField()
+    usuarioDono = models.ForeignKey(Usuarios, on_delete=models.SET_NULL, null=True, related_name='usuarioDono')
 
     def __str__(self):
         return self.nome
