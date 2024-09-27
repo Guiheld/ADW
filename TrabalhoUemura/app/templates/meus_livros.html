@@ -3,7 +3,9 @@
     <div class="header">
       <h2>Meus Livros</h2>
       <div class="header-actions">
-        <!-- botoes -->
+        <a href="{% url 'cadastrar_livro' %}" class="btn btn-create">Cadastrar novo livro</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-create">Dashboard</a>
+        <a href="{% url 'home' %}" class="btn btn-back">Sair</a>
       </div>
     </div>
     <h4 align="center">Bem-vindo {{ usuario.nome }}!</h4>

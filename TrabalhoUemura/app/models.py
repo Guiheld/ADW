@@ -33,4 +33,4 @@ class Livros(models.Model):
     usuarioDono = models.ForeignKey(Usuarios, on_delete=models.SET_NULL, null=True, related_name='usuarioDono')
 
     def __str__(self):
-        return self.nome
+        return self.titulo

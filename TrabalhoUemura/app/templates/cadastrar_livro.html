@@ -1,0 +1,116 @@
+{% block content %}
+  <div class="container">
+    <h2 align="center">{% if form.instance.pk %}Editar Livro{% else %}Criar Livro{% endif %}</h2>
+    <form method="post" class="task-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="{{ form.titulo.id_for_label }}">Título (*):</label>
+        {{ form.titulo }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.autor.id_for_label }}">autor (*):</label>
+        {{ form.autor }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.ano_publicacao.id_for_label }}">ano de publicação (*):</label>
+        {{ form.ano_publicacao }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.preco.id_for_label }}">preço (*):</label>
+        {{ form.preco }}
+      </div>
+      <p class="observacao" align="left">Preencha os campos obrigatorios (*)</p>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-save">Salvar</button>
+        <a href="{% url 'meus_livros' %}" class="btn btn-cancel">Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .task-form {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      resize: none;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+      transition: background-color 0.3s;
+    }
+
+    .btn-save {
+      background-color: #007bff;
+    }
+
+    .btn-save:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-cancel {
+      background-color: #6c757d;
+    }
+
+    .btn-cancel:hover {
+      background-color: #5a6268;
+    }
+
+    .observacao {
+      color: #6c757d; /* Cor cinza discreta */
+      font-size: 0.9em;
+    }
+  </style>
+{% endblock %}

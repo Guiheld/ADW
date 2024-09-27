@@ -1,46 +1,39 @@
 {% block content %}
   <div class="container">
     <div class="header">
-      <h2>Todas as Tarefas</h2>
+      <h2>dashboard</h2>
       <div class="header-actions">
-        <a href="{% url 'definir_tarefas' %}" class="btn btn-create">Voltar</a>
+        <a href="{% url 'meus_livros' %}" class="btn btn-create">Voltar</a>
         <a href="{% url 'home' %}" class="btn btn-back">Sair</a>
       </div>
     </div>
-
+    <h3>{{ usuario.nome }}</h3>
+    <h5> Todos os livros: </h5>
     <div class="task-list">
-      {% for usuario, tarefas in tarefas_por_usuario.items %}
+      {% for livro in livros %}
         <div class="user-tasks">
-          <h3>{{ usuario.nome }}</h3>
-          {% if tarefas %}
+          {% if livro %}
             <div class="task-list-inner">
-              {% for tarefa in tarefas %}
                 <div class="task-card">
                   <div class="task-header">
-                    <strong>{{ tarefa.titulo }}</strong>
-                    <span class="status {{ tarefa.status }}">{{ tarefa.get_status_display }}</span>
+                    <strong>Titulo: {{ livro.titulo }}</strong>
                   </div>
                   <div class="task-body">
-                    <p>{{ tarefa.descricao }}</p>
-                    <p><strong>Responsável:</strong>
-                      {% if tarefa.tarefa_atribuida %}
-                        {{ tarefa.tarefa_atribuida.nome }}
-                      {% else %}
-                        Ninguém
+                    <p>Autor: {{ livro.autor }}</p>
+                    <p>Ano Publicado: {{ livro.ano_publicacao }}</p>
+                    <p>Preço: R${{ livro.preco }}</p>
+                      {% if not livro.usuarioDono %}
+                    <p> Nenhum dono... </p>
                       {% endif %}
-                    </p>
                   </div>
                   <div class="task-footer">
-                    <button class="btn btn-edit" onclick="window.location.href='{% url 'atualizar_tarefa_dashboard' tarefa.id %}'">Editar</button>
-                    <button class="btn btn-delete" onclick="window.location.href='{% url 'deletar_tarefa_dashboard' tarefa.id %}'">Excluir</button>
+                    <!-- -->
                   </div>
-                  <p class="created-by"><b>Criado Por:</b> {{ tarefa.entrada_tarefa }}</p>
                 </div>
-              {% endfor %}
             </div>
           {% else %}
             <div class="no-tasks">
-              Não há tarefas para mostrar.
+              Não há livros para mostrar.
             </div>
           {% endif %}
         </div>
@@ -115,10 +108,10 @@
     }
 
     .task-card {
-      background-color: #fff;
+      background-color: #CCCCCC;
       border: 1px solid #ddd;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       padding: 10px;
       width: calc(50% - 20px);
       box-sizing: border-box;

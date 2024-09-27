@@ -26,8 +26,14 @@ from app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # urls de auth
+    #--------------------------------------------
     path('', views.home, name='home'),
     path('auth/cadastro/', views.cadastro, name='cadastro'),
     path('auth/login/', views.login_view, name='login'),
+    #--------------------------------------------
     path('meus_livros/', views.meus_livros, name='meus_livros'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    #--------------------------------------------
+    path('cadastrar_livro/', views.cadastrar_livro, name='cadastrar_livro'),
 ]

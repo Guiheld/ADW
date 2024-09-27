@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .backupManager import backupUsuariosCSV
+from .formulario import FormularioDeLivros
 from .models import Usuarios, Livros
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -79,3 +80,25 @@ def meus_livros(request):
     usuario = Usuarios.objects.get(id_usuario=request.user.id)
     livros = Livros.objects.filter(usuarioDono=usuario)
     return render(request, 'meus_livros.html', {'livros': livros, 'usuario' : usuario})
+
+
+@login_required(login_url='/auth/login/')
+def dashboard(request):
+    checarBackUp()
+    usuario = Usuarios.objects.get(id_usuario=request.user.id)
+    usuarios = Usuarios.objects.all
+    livros = Livros.objects.all
+    return render(request, 'dashboard.html', {'livros': livros, 'usuario' : usuario, 'usuarios' : usuarios})
+
+
+@login_required(login_url='/auth/login')
+def cadastrar_livro(request):
+    if request.method == 'POST':
+        form = FormularioDeLivros(request.POST)
+        if form.is_valid():
+            livro = form.save()  # Salva o livro
+            # Não é necessário fazer nada aqui, o Django cuida das relações ManyToMany automaticamente
+            return redirect('meus_livros')  # Redirecione para onde você quiser
+    else:
+        form = FormularioDeLivros()
+    return render(request, 'cadastrar_livro.html', {'form': form})
