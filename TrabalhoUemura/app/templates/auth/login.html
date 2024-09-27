@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Página de Login</title>
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+                background-color: #f0f0f0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+            .container {
+                background-color: #fff;
+                padding: 40px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                max-width: 400px;
+                width: 100%;
+            }
+            .container h2 {
+                text-align: center;
+                margin-bottom: 30px;
+                color: #333;
+                font-size: 24px;
+            }
+            .container label {
+                display: block;
+                margin-bottom: 8px;
+                color: #333;
+                font-size: 16px;
+            }
+            .container input[type="text"],
+            .container input[type="password"] {
+                width: 100%;
+                padding: 15px;
+                margin: 10px 0 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                font-size: 16px;
+                background-color: #f9f9f9;
+                box-sizing: border-box;
+            }
+            .container input[type="submit"] {
+                width: 100%;
+                padding: 15px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 18px;
+                transition: background-color 0.3s ease;
+            }
+            .container input[type="submit"]:hover {
+                background-color: #218838;
+            }
+            .signup-link {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 16px;
+            }
+            .signup-link a {
+                color: #007bff;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            .signup-link a:hover {
+                text-decoration: underline;
+            }
+            .error-message {
+                color: red;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <h2>Login</h2>
+            {% if messages %}
+                <div class="error-message">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form action="{% url 'login' %}" method="POST">
+                {% csrf_token %}
+                <label for="nome">Nome de Usuário</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome de usuário" required>
+
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+                <input type="submit" value="Logar">
+
+                <div class="signup-link">
+                    <p>Ainda não tem uma conta? <a href="{% url 'cadastro' %}">Cadastre-se</a></p>
+                </div>
+            </form>
+        </div>
+
+    </body>
+</html>

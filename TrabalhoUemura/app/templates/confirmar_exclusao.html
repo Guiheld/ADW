@@ -1,0 +1,102 @@
+{% block content %}
+  <div class="container">
+    <h2 align="center">Excluir Tarefa</h2>
+
+    <form method="post" class="delete-form">
+      {% csrf_token %}
+
+      <div class="task-details">
+        <p><strong>Título:</strong> {{ tarefa.titulo }}</p>
+        <p><strong>Descrição:</strong> {{ tarefa.descricao }}</p>
+        <p><strong>Status:</strong> {{ tarefa.get_status_display }}</p>
+        <p><strong>Responsável:</strong>
+          {% if tarefa.tarefa_atribuida %}
+            {{ tarefa.tarefa_atribuida.nome }}
+          {% else %}
+            Ninguém
+          {% endif %}
+        </p>
+      </div>
+      <p align="center">Tem certeza de que deseja excluir a tarefa "<strong>{{ tarefa.titulo }}</strong>"?</p>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-delete">Excluir</button>
+        <a href="{% url 'definir_tarefas' %}" class="btn btn-cancel">Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .delete-form {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .task-details {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    .task-details p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .task-details p strong {
+      color: #333;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+      transition: background-color 0.3s;
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+    }
+
+    .btn-delete:hover {
+      background-color: #c82333;
+    }
+
+    .btn-cancel {
+      background-color: #6c757d;
+    }
+
+    .btn-cancel:hover {
+      background-color: #5a6268;
+    }
+  </style>
+{% endblock %}
