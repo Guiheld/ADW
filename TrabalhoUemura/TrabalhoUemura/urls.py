@@ -29,11 +29,4 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('auth/cadastro/', views.cadastro, name='cadastro'),
     path('auth/login/', views.login_view, name='login'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('tarefas/', views.definir_tarefa, name='definir_tarefas'),
-    path('tarefas/criar/', views.criar_tarefa, name='criar_tarefa'),
-    path('tarefas/atualizar/<int:tarefa_id>/', views.atualizar_tarefa, name='atualizar_tarefa'),
-    path('tarefas/deletar/<int:tarefa_id>/', views.deletar_tarefa, name='deletar_tarefa'),
-    path('dashboard/tarefas/atualizar/<int:tarefa_id>/', views.atualizar_tarefa_dashboard, name='atualizar_tarefa_dashboard'),
-    path('dashboard/tarefas/deletar/<int:tarefa_id>/', views.deletar_tarefa_dashboard, name='deletar_tarefa_dashboard'),
 ]
