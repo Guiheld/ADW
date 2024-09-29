@@ -25,11 +25,10 @@ class Usuarios(models.Model):
 
 class Livros(models.Model):
 
-    id_usuario = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=250)
     autor = models.TextField(max_length=250)
-    ano_publicacao = models.IntegerField()
-    preco = models.FloatField()
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+    ano_publicacao = models.DateField()
     usuarioDono = models.ForeignKey(Usuarios, on_delete=models.SET_NULL, null=True, related_name='usuarioDono')
 
     def __str__(self):

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .backupManager import backupUsuariosCSV
+from .backupManager import backupUsuariosCSV, backupLivrosCSV
 from .formulario import FormularioDeLivros
 from .models import Usuarios, Livros
 from django.contrib.auth.decorators import login_required
@@ -20,6 +20,7 @@ from django.urls import reverse
 
 def checarBackUp(): # Verifica a integridade do banco de dados a partir dos backups csv
     backupUsuariosCSV.verificaIntegridadeUsuarios()
+    backupLivrosCSV.verificaIntegridadeLivros()
 
 #----------------------------------------------------------------------------------------------------
 #   Processo de autenticacao
@@ -96,9 +97,29 @@ def cadastrar_livro(request):
     if request.method == 'POST':
         form = FormularioDeLivros(request.POST)
         if form.is_valid():
-            livro = form.save()  # Salva o livro
-            # Não é necessário fazer nada aqui, o Django cuida das relações ManyToMany automaticamente
+            livro = form.save(commit=False)
+            livro.usuarioDono = Usuarios.objects.get(id_usuario=request.user.id)
+            livro.save()
+            backupLivrosCSV.atualizaBackupLivros()
             return redirect('meus_livros')  # Redirecione para onde você quiser
     else:
         form = FormularioDeLivros()
     return render(request, 'cadastrar_livro.html', {'form': form})
+
+@login_required(login_url='/auth/login/')
+def emprestar_livro(request, id):
+    usuario = get_object_or_404(Usuarios, id_usuario=request.user.id)
+    livro = get_object_or_404(Livros, id=id)
+    if request.method == 'POST':
+        livro.usuarioDono = usuario
+        livro.save()
+        return redirect('dashboard')
+    return render(request, 'emprestar_livro.html', {'livro': livro})
+
+
+@login_required(login_url='/auth/login/')
+def emprestar_livro_modal(request):
+    livro_id = request.GET.get('livro_id')
+    livro = get_object_or_404(Livros, id=livro_id)
+    return render(request, 'emprestar_livro.html', {'livro': livro})
+
