@@ -1,204 +1,248 @@
-{% block content %}
-  <div class="container">
-    <div class="header">
-      <h2>dashboard</h2>
-      <div class="header-actions">
-        <a href="{% url 'meus_livros' %}" class="btn btn-create">Voltar</a>
-        <a href="{% url 'home' %}" class="btn btn-back">Sair</a>
-      </div>
-    </div>
-    <h3>{{ usuario.nome }}</h3>
-    <h5> Todos os livros: </h5>
-    <div class="task-list">
-      {% for livro in livros %}
-        <div class="user-tasks">
-          {% if livro %}
-            <div class="task-list-inner">
-                <div class="task-card">
-                  <div class="task-header">
-                    <strong>Titulo: {{ livro.titulo }}</strong>
-                  </div>
-                  <div class="task-body">
-                    <p>Autor: {{ livro.autor }}</p>
-                    <p>Ano Publicado: {{ livro.ano_publicacao }}</p>
-                    <p>Preço: R${{ livro.preco }}</p>
-                      {% if not livro.usuarioDono %}
-                    <p> Nenhum dono... </p>
-                      {% endif %}
-                  </div>
-                  <div class="task-footer">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <style>
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
 
-                  </div>
-                </div>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .header h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .header-actions .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-create {
+            background-color: #007bff;
+        }
+
+        .btn-create:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+        }
+
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+
+        .task-list {
+            margin-top: 20px;
+        }
+
+        .task-list-inner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* Adiciona espaço entre os cartões */
+            gap: 20px;
+        }
+
+        .task-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            width: calc(33.33% - 20px); /* Define a largura dos cartões */
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-body {
+            margin-bottom: 15px;
+        }
+
+        .task-footer {
+            display: flex;
+            margin-top: auto;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+        }
+
+        .btn-edit:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .no-tasks {
+            text-align: center;
+            color: #999;
+        }
+
+        /* Pop-up estilos */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function openModal(livroId) {
+            var modal = document.getElementById("purchaseModal");
+            var modalContent = document.getElementById("modalContent");
+
+            // Fazer uma solicitação AJAX para carregar o conteúdo do modal
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{% url "emprestar_livro_modal" %}?livro_id=' + livroId, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    modalContent.innerHTML = xhr.responseText;
+                    modal.style.display = "block";
+                }
+            };
+            xhr.send();
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("purchaseModal");
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById("purchaseModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    {% block content %}
+    <div class="container">
+        <div class="header">
+            <h2>Dashboard</h2>
+            <div class="header-actions">
+                <a href="{% url 'meus_livros' %}" class="btn btn-create">Voltar</a>
+                <a href="{% url 'home' %}" class="btn btn-back">Sair</a>
             </div>
-          {% else %}
-            <div class="no-tasks">
-              Não há livros para mostrar.
-            </div>
-          {% endif %}
         </div>
-      {% endfor %}
+        <h3>{{ usuario.nome }}</h3>
+        <h5>Todos os livros:</h5>
+        <div class="task-list">
+            <div class="task-list-inner">
+                {% for livro in livros %}
+                <div class="task-card">
+                    <div class="task-header">
+                        <strong>Título: {{ livro.titulo }}</strong>
+                    </div>
+                    <div class="task-body">
+                        <p>Autor: {{ livro.autor }}</p>
+                        <p>Taxa de emprestimo: R${{ livro.preco }}</p>
+                        <p>Ano de publicação: {{ livro.ano_publicacao }}</p>
+                        {% if livro.usuarioDono %}
+                        <p>Emprestado por: {{ livro.usuarioDono }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="task-footer">
+                        <button class="btn btn-edit" onclick="openModal('{{ livro.id }}')">Emprestar</button>
+                        <button class="btn btn-edit" onclick="window.location.href='{% url 'editar_preco_livro' livro.id %}'">Editar Preço</button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-tasks">
+                    Não há livros para mostrar.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-  </div>
 
-  <style>
-    .container {
-      width: 80%;
-      margin: 0 auto;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 10px;
-    }
-
-    .header h2 {
-      margin: 0;
-      color: #333;
-    }
-
-    .header-actions .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      border-radius: 5px;
-      text-decoration: none;
-      color: #fff;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
-
-    .btn-create {
-      background-color: #007bff;
-    }
-
-    .btn-create:hover {
-      background-color: #0056b3;
-    }
-
-    .btn-back {
-      background-color: #6c757d;
-    }
-
-    .btn-back:hover {
-      background-color: #5a6268;
-    }
-
-    .task-list {
-      margin-top: 20px;
-    }
-
-    .user-tasks {
-      margin-bottom: 30px;
-    }
-
-    .user-tasks h3 {
-      margin-bottom: 15px;
-      color: #333;
-    }
-
-    .task-list-inner {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .task-card {
-      background-color: #CCCCCC;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 10px;
-      width: calc(50% - 20px);
-      box-sizing: border-box;
-      position: relative; /* Necessário para o posicionamento absoluto do <p> */
-      display: flex;
-      flex-direction: column;
-    }
-
-    .task-card:hover {
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-
-    .task-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .task-header .status {
-      padding: 5px 10px;
-      border-radius: 5px;
-      color: #fff;
-    }
-
-    .status.pendente {
-      background-color: #ffc107;
-    }
-
-    .status.andamento {
-      background-color: #17a2b8;
-    }
-
-    .status.concluida {
-      background-color: #28a745;
-    }
-
-    .task-body {
-      margin-bottom: 15px;
-    }
-
-    .task-footer {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      border-radius: 5px;
-      border: none;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      text-align: center;
-    }
-
-    .btn-edit {
-      background-color: #007bff;
-    }
-
-    .btn-edit:hover {
-      background-color: #0056b3;
-    }
-
-    .btn-delete {
-      background-color: #dc3545;
-    }
-
-    .btn-delete:hover {
-      background-color: #c82333;
-    }
-
-    .no-tasks {
-      text-align: left;
-      padding-left: 10px;
-      font-size: 1.2em;
-      color: #888;
-    }
-
-    .created-by {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      color: #6c757d; /* Cor cinza discreta */
-      font-size: 0.9em;
-    }
-
-  </style>
-{% endblock %}
+    <!-- Modal Pop-up -->
+    <div id="purchaseModal" class="modal">
+        <div class="modal-content" id="modalContent">
+            <!-- O conteúdo do modal será carregado aqui através do AJAX -->
+        </div>
+        <span class="close" onclick="closeModal()">&times;</span>
+    </div>
+    {% endblock %}
+</body>
+</html>

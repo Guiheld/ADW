@@ -1,15 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
-
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .backupManager import backupUsuariosCSV
+from .backupManager import backupUsuariosCSV, backupLivrosCSV
 from .formulario import FormularioDeLivros
 from .models import Usuarios, Livros
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse
 
 # ANOTAÇÕES - Guilherme
@@ -19,6 +21,7 @@ from django.urls import reverse
 
 def checarBackUp(): # Verifica a integridade do banco de dados a partir dos backups csv
     backupUsuariosCSV.verificaIntegridadeUsuarios()
+    backupLivrosCSV.verificaIntegridadeLivros()
 
 #----------------------------------------------------------------------------------------------------
 #   Processo de autenticacao
@@ -97,6 +100,10 @@ def cadastrar_livro(request):
         if form.is_valid():
             livro = form.save()  # Salva o livro
             # Não é necessário fazer nada aqui, o Django cuida das relações ManyToMany automaticamente
+            livro = form.save(commit=False)
+            livro.usuarioDono = Usuarios.objects.get(id_usuario=request.user.id)
+            livro.save()
+            backupLivrosCSV.atualizaBackupLivros()
             return redirect('meus_livros')  # Redirecione para onde você quiser
     else:
         form = FormularioDeLivros()
@@ -119,15 +126,14 @@ def emprestar_livro_modal(request):
     livro = get_object_or_404(Livros, id=livro_id)
     return render(request, 'emprestar_livro.html', {'livro': livro})
 
-
 @login_required(login_url='/auth/login')
-def editar_preco_livro(request,id):
-    livro = get_object_or_404(Livros,id=id )
+def editar_preco_livro(request, id):
+    livro = get_object_or_404(Livros, id=id)
     if request.method == 'POST':
-        form = FormularioDeLivros(request.POST, instance=Livros)
+        form = FormularioDeLivros(request.POST, instance=livro)
         if form.is_valid():
             form.save()
             return redirect('meus_livros')
-        else:
-            form = FormularioDeLivros(instance=Livros)
-            return render(request, 'dashboard.html', {'form': form, 'livro': livro})
+    else:
+        form = FormularioDeLivros(instance=livro)
+    return render(request, 'dashboard.html', {'form': form, 'livro': livro})
