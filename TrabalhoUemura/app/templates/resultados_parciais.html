@@ -1,0 +1,10 @@
+<!-- Arquivo: resultados_parciais.html -->
+{% if resultados.exists %}
+  <ul>
+    {% for livro in resultados %}
+      <li>{{ livro.titulo }} por {{ livro.autor }} ({{ livro.ano_publicacao }}): R$ {{ livro.preco }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Nenhum livro encontrado.</p>
+{% endif %}

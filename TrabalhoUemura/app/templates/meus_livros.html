@@ -1,4 +1,5 @@
 {% block content %}
+
   <div class="container">
     <div class="header">
       <h2>Meus Livros</h2>
@@ -8,7 +9,24 @@
         <a href="{% url 'home' %}" class="btn btn-back">Sair</a>
       </div>
     </div>
+    <!-- Pesquisa por autor -->
+    <div class="btn-container">
+        <button id="modalBtn" class="btn-primary">Abrir Pesquisa de Autor</button>
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <!-- Formulário de Pesquisa no Modal -->
+            <form id="searchForm" class="modal-form">
+                <input type="text" name="autor" id="autor" placeholder="Buscar por autor">
+                <button type="submit">Buscar</button>
+            </form>
+            <!-- Exibir Resultados da Pesquisa -->
+            <div id="resultados"></div>
+        </div>
+    </div>
     <h4 align="center">Bem-vindo {{ usuario.nome }}!</h4>
+    <br>
     <div class="task-list">
       {% for livros in livros %}
         <div class="task-card">
@@ -32,7 +50,163 @@
     </div>
   </div>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Script para controlar abertura e fechamento do modal
+            var modal = document.getElementById("myModal");
+            var btn = document.getElementById("modalBtn");
+            var span = document.getElementsByClassName("close")[0];
+
+            btn.onclick = function() {
+                modal.style.display = "block";
+            };
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            };
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            };
+
+            // AJAX Script para o formulário de busca
+            $("#searchForm").on("submit", function(event) {
+                event.preventDefault();
+                var query = $("#autor").val();
+                $.ajax({
+                    url: "{% url 'buscar_livros_por_autor' %}",
+                    data: {
+                        'autor': query
+                    },
+                    success: function(data) {
+                        $("#resultados").html(data);
+                    },
+                    error: function(xhr, errmsg, err) {
+                        $("#resultados").html("<div class='alert alert-danger' role='alert'>Ocorreu um erro ao fazer a busca. Tente novamente.</div>");
+                    }
+                });
+            });
+        });
+
+        function openModal(livroId) {
+            var modal = document.getElementById("purchaseModal");
+            var modalContent = document.getElementById("modalContent");
+
+            // Fazer uma solicitação AJAX para carregar o conteúdo do modal
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{% url "emprestar_livro_modal" %}?livro_id=' + livroId, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    modalContent.innerHTML = xhr.responseText;
+                    modal.style.display = "block";
+                }
+            };
+            xhr.send();
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("purchaseModal");
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById("purchaseModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
   <style>
+
+    /* Estilos básicos para o modal */
+    .modal {
+        display: none; /* Hidden por padrão */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4); /* Preto com opacidade */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        border-radius: 8px; /* Adiciona bordas arredondadas */
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal-form input {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    .modal-form button {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        background-color: #28a745;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .modal-form button:hover {
+        background-color: #218838;
+    }
+
+    .btn-primary {
+    background-color: #007bff; /* Cor de fundo padrão */
+    color: #fff; /* Cor do texto */
+    padding: 10px 20px; /* Espaçamento interno */
+    border-radius: 5px; /* Borda arredondada */
+    border: none; /* Remover borda padrão */
+    cursor: pointer; /* Cursor de ponteiro */
+    font-size: 16px; /* Tamanho da fonte */
+    transition: background-color 0.3s; /* Transição suave */
+  }
+
+  .btn-primary:hover {
+      background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+  }
+    /* Contêiner do botão alinhado à direita */
+  .btn-container {
+      display: flex;
+      justify-content: flex-end; /* Alinhar conteúdo à direita */
+      margin-bottom: 20px; /* Espaçamento inferior opcional */
+  }
+
 
     .container {
       width: 80%;

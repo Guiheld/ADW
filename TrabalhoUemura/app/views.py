@@ -137,3 +137,12 @@ def editar_preco_livro(request, id):
     else:
         form = FormularioDeLivros(instance=livro)
     return render(request, 'dashboard.html', {'form': form, 'livro': livro})
+
+def buscar_livros_por_autor(request):
+    query = request.GET.get('autor')
+    if query:
+        resultados = Livros.objects.filter(autor__icontains=query)
+    else:
+        resultados = Livros.objects.none()
+    return render(request, 'resultados_parciais.html', {'resultados': resultados})
+
