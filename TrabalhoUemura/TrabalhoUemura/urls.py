@@ -38,7 +38,8 @@ urlpatterns = [
     path('cadastrar_livro/', views.cadastrar_livro, name='cadastrar_livro'),
     path('emprestar_livro/<int:id>/', views.emprestar_livro, name='emprestar_livro'),         #processa o emprestimo
     path('emprestar_livro_modal/', views.emprestar_livro_modal, name='emprestar_livro_modal'),#carrega o modal
-    path('dashboard/editar_preco_livro/<int:id>/', views.editar_preco_livro, name='editar_preco_livro'),
+    path('cadastrar_livro/editar_preco_livro/<int:id>/', views.editar_preco_livro, name='editar_preco_livro'),
+    path('dashboard/deletar_livro/<int:id>', views.deletar_livro, name='deletar_livro'),
     #--------------------------------------------
     path('buscar/', views.buscar_livros_por_autor, name='buscar_livros_por_autor'),
 

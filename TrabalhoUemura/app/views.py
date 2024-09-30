@@ -133,10 +133,20 @@ def editar_preco_livro(request, id):
         form = FormularioDeLivros(request.POST, instance=livro)
         if form.is_valid():
             form.save()
-            return redirect('meus_livros')
+            return redirect('dashboard')
     else:
         form = FormularioDeLivros(instance=livro)
-    return render(request, 'dashboard.html', {'form': form, 'livro': livro})
+    return render(request, 'cadastrar_livro.html', {'form': form, 'livro': livro})
+
+@login_required(login_url='/auth/login')
+def deletar_livro(request, id):
+    livro = get_object_or_404(Livros, id=id)
+    if request.method == 'POST':
+        livro.delete()
+        return redirect('dashboard')
+    else:
+        form = FormularioDeLivros(instance=livro)
+        return render(request, 'dashboard.html', {'form': form})
 
 def buscar_livros_por_autor(request):
     query = request.GET.get('autor')

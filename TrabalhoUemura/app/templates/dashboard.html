@@ -367,6 +367,11 @@
                     </div>
                     <div class="task-footer">
                         <button class="btn btn-edit" onclick="openModal('{{ livro.id }}')">Emprestar</button>
+                    <form method="POST" action="{% url 'deletar_livro' livro.id %}">
+                        {% csrf_token %}
+                            <button type="submit" class="btn btn-delete">Excluir</button>
+                    </form>
+    
                         <button class="btn btn-edit" onclick="window.location.href='{% url 'editar_preco_livro' livro.id %}'">Editar Preço</button>
                     </div>
                 </div>
