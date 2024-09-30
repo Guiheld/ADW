@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .backupManager import backupUsuariosCSV
 from .backupManager import backupUsuariosCSV, backupLivrosCSV
-from .formulario import FormularioDeLivros
+from .formulario import FormularioDeLivros, Formularioprecos
 from .models import Usuarios, Livros
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -130,13 +130,13 @@ def emprestar_livro_modal(request):
 def editar_preco_livro(request, id):
     livro = get_object_or_404(Livros, id=id)
     if request.method == 'POST':
-        form = FormularioDeLivros(request.POST, instance=livro)
+        form = Formularioprecos(request.POST, instance=livro)
         if form.is_valid():
             form.save()
             return redirect('dashboard')
     else:
-        form = FormularioDeLivros(instance=livro)
-    return render(request, 'cadastrar_livro.html', {'form': form, 'livro': livro})
+        form = Formularioprecos(instance=livro)
+    return render(request, 'editar_preco.html', {'form': form, 'livro': livro})
 
 @login_required(login_url='/auth/login')
 def deletar_livro(request, id):
