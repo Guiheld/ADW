@@ -36,5 +36,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     #--------------------------------------------
     path('cadastrar_livro/', views.cadastrar_livro, name='cadastrar_livro'),
-    path('dashboard/editar_preco_livro/<int:pk>/', views.editar_preco_livro, name='editar_preco_livro'),
+    path('emprestar_livro/<int:id>/', views.emprestar_livro, name='emprestar_livro'),         #processa o emprestimo
+    path('emprestar_livro_modal/', views.emprestar_livro_modal, name='emprestar_livro_modal'),#carrega o modal
+
 ]

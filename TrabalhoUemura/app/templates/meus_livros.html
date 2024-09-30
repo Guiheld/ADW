@@ -16,10 +16,13 @@
             <strong>{{ livros.titulo }}</strong>
           </div>
           <div class="task-body">
-            <p>{{ livros.autor }}</p>
-            <p><b>Responsável:</b> {{ tarefa.tarefa_atribuida }}</p>
+            <p>Autor: {{ livros.autor }}</p>
+            <p>Taxa de emprestimo: R${{ livros.preco }}</p>
+            <p>Ano de lancamento: {{livros.ano_publicacao}}</p>
+            {% if livros.usuarioDono %}
+              <p> Emprestado por: {{livros.usuarioDono}} </p>
+            {% endif %}
           </div>
-          <p class="created-by"><b>Criado Por:</b></p>
         </div>
       {% empty %}
         <div class="no-tasks">
