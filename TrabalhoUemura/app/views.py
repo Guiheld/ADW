@@ -102,9 +102,27 @@ def cadastrar_livro(request):
         form = FormularioDeLivros()
     return render(request, 'cadastrar_livro.html', {'form': form})
 
+@login_required(login_url='/auth/login/')
+def emprestar_livro(request, id):
+    usuario = get_object_or_404(Usuarios, id_usuario=request.user.id)
+    livro = get_object_or_404(Livros, id=id)
+    if request.method == 'POST':
+        livro.usuarioDono = usuario
+        livro.save()
+        return redirect('dashboard')
+    return render(request, 'emprestar_livro.html', {'livro': livro})
+
+
+@login_required(login_url='/auth/login/')
+def emprestar_livro_modal(request):
+    livro_id = request.GET.get('livro_id')
+    livro = get_object_or_404(Livros, id=livro_id)
+    return render(request, 'emprestar_livro.html', {'livro': livro})
+
+
 @login_required(login_url='/auth/login')
-def editar_preco_livro(request,pk):
-    livro = get_object_or_404(Livros,pk=pk )
+def editar_preco_livro(request,id):
+    livro = get_object_or_404(Livros,id=id )
     if request.method == 'POST':
         form = FormularioDeLivros(request.POST, instance=Livros)
         if form.is_valid():
