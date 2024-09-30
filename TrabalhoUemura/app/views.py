@@ -1,16 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+
 
 from .backupManager import backupUsuariosCSV
 from .formulario import FormularioDeLivros
 from .models import Usuarios, Livros
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 # ANOTAÇÕES - Guilherme
@@ -102,3 +101,15 @@ def cadastrar_livro(request):
     else:
         form = FormularioDeLivros()
     return render(request, 'cadastrar_livro.html', {'form': form})
+
+@login_required(login_url='/auth/login')
+def editar_preco_livro(request,pk):
+    livro = get_object_or_404(Livros,pk=pk )
+    if request.method == 'POST':
+        form = FormularioDeLivros(request.POST, instance=Livros)
+        if form.is_valid():
+            form.save()
+            return redirect('meus_livros')
+        else:
+            form = FormularioDeLivros(instance=Livros)
+            return render(request, 'dashboard.html', {'form': form, 'livro': livro})
