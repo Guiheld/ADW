@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 # ANOTAÇÕES - Guilherme
 # Arquivo para armazenar as configurações gerais do projeto, como os pacotes
 # a serem utilizados, configurações de bancos de dados, localização de arquivos estáticos,
@@ -118,10 +118,18 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Diretório onde o Django irá coletar todos os arquivos estáticos quando você rodar o comando 'collectstatic'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Lista de diretórios onde o Django irá procurar por arquivos estáticos
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

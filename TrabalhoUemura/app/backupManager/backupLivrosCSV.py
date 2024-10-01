@@ -193,3 +193,42 @@ def alterarLivro(Livros, Usuarios):
 
     except Exception as e:
         print_exception(type(e), e, e.__traceback__)
+
+#adiciona um livro importado em um backup temp, o mais recente, evita muita cria/apaga de arquivos
+def importLivroTemp(livros_id, titulo, autor, preco, ano_publicacao, usuarioDono, usuario_id, operacao):
+    try:
+        abs_diretorioBackups = os.path.abspath(diretorioBackups)
+        print(f"Diretório absoluto de backups: {abs_diretorioBackups}")
+
+        if not os.path.exists(abs_diretorioBackups):
+            print("Diretório de backups temporários de livros não existe.")
+            os.makedirs(abs_diretorioBackups)
+            print("Diretório criado")
+        else:
+            print("Diretório existe")
+
+        # Identificar o backup temporário mais recente
+        files_in_directory = os.listdir(abs_diretorioBackups)
+        files_in_directory = [f for f in files_in_directory if f.startswith(backupTemp) and f.endswith('.csv')]
+        if not files_in_directory:
+            # Se não houver backups temporários, criar um novo
+            backupTempName = administradorBackupsTemp(backupTemp)
+        else:
+            # Pegar o mais recente
+            backupTempName = sorted(files_in_directory, reverse=True)[0]
+
+        file_path = os.path.join(abs_diretorioBackups, backupTempName)
+        print("Caminho do diretório: " + file_path)
+
+        # Adicionar os detalhes do livro alterado ao backup temporário existente
+        with open(file_path, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(
+                ['livro_id', 'titulo', 'autor', 'ano_publicacao', 'preco', 'usuarios_donos', operacao])
+            writer.writerow(
+                [livros_id, titulo, autor, ano_publicacao, preco, usuarioDono,
+                 usuario_id])
+            print(f"Backup alterado: {backupTempName}")
+
+    except Exception as e:
+        print_exception(type(e), e, e.__traceback__)

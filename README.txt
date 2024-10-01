@@ -21,7 +21,7 @@ INSTRUÇÕES:
     Windows:
         python manage.py runserver
     Linux:
-        python 3 manage.py runserver
+        python3 manage.py runserver
 
   Certifique-se que voce possue o framework Django baixado, caso nao, rode o seguinte comando:
        pip install django

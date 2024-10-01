@@ -115,7 +115,9 @@ def emprestar_livro(request, id):
     livro = get_object_or_404(Livros, id=id)
     if request.method == 'POST':
         livro.usuarioDono = usuario
+        backupLivrosCSV.alterarLivro(livro, usuario)
         livro.save()
+        backupLivrosCSV.atualizaBackupLivros()
         return redirect('dashboard')
     return render(request, 'emprestar_livro.html', {'livro': livro})
 

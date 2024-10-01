@@ -23,7 +23,7 @@ from django.contrib import admin
 from django.urls import path, include
 from app import views
 
-from app.backupManager import exportarDadosCSV
+from app.backupManager import exportarDadosCSV, importarDadosCSV
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -45,5 +45,6 @@ urlpatterns = [
     path('buscar/', views.buscar_livros_por_autor, name='buscar_livros_por_autor'),
     #--------------------------------------------
     path('download_backup/', exportarDadosCSV.download_backup_files, name='download_backup'),
+    path('upload_backup/', importarDadosCSV.upload_backup, name='upload_backup'),
 
 ]
