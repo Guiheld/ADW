@@ -70,6 +70,7 @@
     }
 
     .btn-primary {
+    margin-right: 10px;
     background-color: #007bff; /* Cor de fundo padrão */
     color: #fff; /* Cor do texto */
     padding: 10px 20px; /* Espaçamento interno */
@@ -78,6 +79,7 @@
     cursor: pointer; /* Cursor de ponteiro */
     font-size: 16px; /* Tamanho da fonte */
     transition: background-color 0.3s; /* Transição suave */
+
   }
 
   .btn-primary:hover {
@@ -319,6 +321,15 @@
                 modal.style.display = "none";
             }
         }
+
+        function downloadFiles() { //odeio javascript
+            const link = document.createElement('a');
+            link.href = `/download_backup/`;
+            link.download = 'backup.zip';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
 </head>
 <body>
@@ -332,9 +343,9 @@
             </div>
         </div>
          <br>
-        <!-- Pesquisa por autor -->
         <div class="btn-container">
             <button id="modalBtn" class="btn-primary">Abrir Pesquisa de Autor</button>
+            <button class="btn-primary" onclick="downloadFiles()">Exportar dados</button>
         </div>
         <div id="myModal" class="modal">
             <div class="modal-content">

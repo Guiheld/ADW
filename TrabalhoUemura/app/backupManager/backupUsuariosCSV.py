@@ -56,7 +56,7 @@ def verificaIntegridadeUsuarios():
     except Exception as e:
         print_exception(type(e), e, e.__traceback__)
 
-def restaurarBancoDeDadosLivros():
+def restaurarBancoDeDadosUsuarios():
     try:
         directory = os.path.dirname(__file__)  # puxa dir que ele esta
         file_path = os.path.join(directory, backupPrincipal)  # faz o path absoluto

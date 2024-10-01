@@ -41,6 +41,9 @@
               <p> Emprestado por: {{livros.usuarioDono}} </p>
             {% endif %}
           </div>
+          <div class="task-footer">
+            <button class="btn btn-edit" onclick="window.location.href='{% url 'editar_preco_livro' livros.id %}'">Editar Preço</button>
+          </div>
         </div>
       {% empty %}
         <div class="no-tasks">

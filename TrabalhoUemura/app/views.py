@@ -128,11 +128,15 @@ def emprestar_livro_modal(request):
 
 @login_required(login_url='/auth/login')
 def editar_preco_livro(request, id):
+    usuario = Usuarios.objects.get(id_usuario=request.user.id)
     livro = get_object_or_404(Livros, id=id)
     if request.method == 'POST':
         form = Formularioprecos(request.POST, instance=livro)
         if form.is_valid():
+            livro = form.save(commit=False)
+            backupLivrosCSV.alterarLivro(livro, usuario)
             form.save()
+            backupLivrosCSV.atualizaBackupLivros()
             return redirect('dashboard')
     else:
         form = Formularioprecos(instance=livro)
@@ -140,9 +144,12 @@ def editar_preco_livro(request, id):
 
 @login_required(login_url='/auth/login')
 def deletar_livro(request, id):
+    usuario = Usuarios.objects.get(id_usuario=request.user.id)
     livro = get_object_or_404(Livros, id=id)
     if request.method == 'POST':
+        backupLivrosCSV.deletarLivro(livro, usuario)
         livro.delete()
+        backupLivrosCSV.atualizaBackupLivros()
         return redirect('dashboard')
     else:
         form = FormularioDeLivros(instance=livro)
