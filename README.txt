@@ -26,43 +26,29 @@ INSTRUÇÕES:
   Certifique-se que voce possue o framework Django baixado, caso nao, rode o seguinte comando:
        pip install django
 
-    Este projeto foi feito usando o sistema já feito em um trabalho anterior, o seu repositorio é: https://github.com/Guiheld/PythonTrabalhoUemura/tree/v1.0.0. Partes como login, cadastro etc
-são reciclados deste sistema.
+    Este projeto foi feito usando o sistema já feito em um trabalho anterior, o seu repositorio é: https://github.com/Guiheld/PythonTrabalhoUemura/tree/v1.0.0. Partes como login, cadastro etc são legados deste sistema.
 
 SOBRE O CODIGO:
     O codigo segue o padrão do framework django, contendo as rotas em urls.py, regras de negocio em views.py e os templates html no diretorio /templates/.
     
-    1. Autenticação 
+    1. Autenticação, Visualização, Criação, Exclusão e Atualizar/Editar:
+        Funcionam de forma semelhante ao sistema original, com mínimas mudanças para se adaptar ao tema e aos requisitos do trabalho.
   
-      A função de cadastro do sistema utiliza tanto o modelo padrão do Django (User) quanto um modelo personalizado (Usuarios). O modelo padrão do Django é usado para uma implementação rápida e segura, aproveitando as funcionalidades prontas do framework. 
-    Por outro lado, o modelo personalizado permite a customização necessária para atender a requisitos específicos do projeto.
-    
-      Para a função de login, o sistema utiliza exclusivamente o método padrão do Django (login(request, user)). Isso é feito devido à superior segurança e facilidade de implementação oferecidas pelo sistema de autenticação padrão,
-    especialmente com relação à automatização do hash de senhas.
-    
-  Gerenciamento de Tarefas (Criação, Remoção, Edição e Visualização)
-  
-    2. Visualização
-        Após a autenticação, o usuário é redirecionado do login para a função "definir_tarefa", onde são aplicadas as regras de negócios da página "Minhas Tarefas". 
-      Nessa função, o sistema busca o objeto do usuário atualmente logado e suas tarefas (aquelas atribuídas a ele, e não as criadas por ele).
-      Em seguida, a página HTML é renderizada. Um loop é utilizado para criar um cartão para cada tarefa, listando seus dados. 
-      No final do arquivo, há um script em JavaScript que implementa a lógica de filtragem das tarefas com base no seu status/andamento.
-      
-        A função dashboard pode ser acessada a partir da página "Minhas Tarefas" através de um botão. Nessa função, são buscados todos os usuários e criado um dicionário que mapeia cada usuário para as suas tarefas. 
-      Em seguida, a página HTML é renderizada, que é semelhante à página "Minhas Tarefas".
+    2. Backup's Principais
+        Para manter a integridade dos dados do banco de dados, foi criado um arquivo CSV que mantém todos os dados que deveriam estar no sistema. Este arquivo é atualizado ao criar, excluir ou editar dados.
+      Ele é utilizado tanto para usuários quanto para livros. Se algum cadastro estiver ausente no banco de dados, o sistema o recupera do backup principal.
 
-    3. Criação
-        A função de criação de tarefas utiliza um formulário definido em formulario.py. Após o usuário preenchê-lo, é criado um objeto de tarefa e o usuário logado é buscado para finalizar a criação da nova tarefa.
-      Para criar o formulário, é realizado um query para buscar todos os usuários e uma lista de possiveis valores para "status", o que popula o campo de opções para selecionar o responsável e o status atual da tarefa pela nova tarefa.
+    3. Backup's Temporarios
+        Os backups temporários são criados dinamicamente pelo sistema e gerenciados automaticamente. Caso o diretório não exista, ele é criado dinamicamente. Esses backups não têm utilidade além de permitir a 
+      visualização de alterações realizadas pelos usuários ou de dados importados. O sistema permite apenas 5 arquivos temporários, excluindo automaticamente o mais antigo ao criar um novo backup temporário durante
+      a exclusão de um livro.
       
-    4. Exclusão
-        A função de exclusão recebe como parâmetro o id da tarefa a ser deletada. Então, a tarefa é buscada e deletada.
-      A diferença entre as funções "deletar_tarefa" e "deletar_tarefa_dashboard" é que na função "deletar_tarefa_dashboard" o usuário logado não é buscado.
+    4. Exportação de Backup's
+        É possível exportar um backup, gerando um arquivo .zip contendo dois arquivos principais (usuários e livros) e uma pasta com os backups temporários dos livros.
       
-    5. Atualizar/Editar
-       A função de editar/atualizar a tarefa foi feita com a lógica semelhante a de exclusão, porém invez de deletar, o usuario é encaminhado para o formulario, onde ele é preenchido novamente e então as alterações são salvas.
-      A única diferença entre "atualizar_tarefa" e "atualizar_tarefa_dashboard" também é a mesma que em exclusão, em "atualizar_tarefa_dashboard" não tem uma busca pelo usuario.
+    5. Importação de Backup's
+       É possível importar um backup, mas ele só será processado se tiver a mesma estrutura do backup gerado pelo próprio sistema. Durante a importação, os dois arquivos principais são processados, e se houver usuários 
+      ou livros ausentes no sistema, eles serão adicionados. Quanto aos backups temporários, o conteúdo do arquivo mais recente é inserido no final do backup temporário mais recente do sistema, marcado com a tag "importado" 
+      no cabeçalho para indicar a operação realizada.
 
-Observação: A função "home" serve somente para redirecionar o usuaro à tela de login.
-        
-  
+Observação: Sabemos que o trabalho não precisava ser em django, mas queriamos dar uma caprichada
