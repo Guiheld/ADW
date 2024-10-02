@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Dashboard{% endblock %}</title>
+    <title>{% block title %}Dashboard - Biblioteca{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -81,7 +81,7 @@
     {% block content %}
     <div class="container">
         <div class="header">
-            <h2>Dashboard</h2>
+            <h2>Dashboard - Biblioteca</h2>
             <div class="header-actions">
                 <a href="{% url 'meus_livros' %}" class="btn btn-create">Voltar</a>
                 <a href="{% url 'home' %}" class="btn btn-back">Sair</a>

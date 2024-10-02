@@ -38,6 +38,9 @@ def limpar_dir_imports():
         print("diretorio limpado!")
 
 def upload_backup(request):
+    if not 'backup_file' in request.FILES or not request.FILES['backup_file']:
+        print("Erro: Nenhum arquivo foi carregado!")
+        return redirect('dashboard')
     if request.method == 'POST' and request.FILES['backup_file']:
         backup_file = request.FILES['backup_file']
 
@@ -60,7 +63,6 @@ def upload_backup(request):
 
         # Processar o arquivo zip
         process_backup(file_path)
-
     return redirect('dashboard')
 
 
@@ -128,12 +130,18 @@ def extrair_livros(filepath_principalLivros):
             for row in reader:
                 livros_id = row[0]
                 titulo = row[1]
-                email = row[2]
-                preco = row[3]
-                ano_publicacao = row[4]
-                usuarioDono = row[5]
-                if not Livros.objects.get(id=livros_id) or not Livros.objects.get(titulo=titulo):
-                    Livros(livros_id, titulo, email, preco, ano_publicacao, usuarioDono).save()
+                autor = row[2]
+                ano_publicacao = row[3]
+                preco = row[4]
+                nome_usuario = row[5].strip()
+                usuarioDono = Usuarios.objects.filter(nome__iexact=nome_usuario).first()
+                if usuarioDono.DoesNotExist:
+                    print(f"Usuário {row[5]} não encontrado no banco de dados. Primeiro usuario colocado como dono.")
+                    usuarioDono = (Usuarios.objects.all()).first()
+                if not Livros.objects.filter(id=livros_id).exists() and not Livros.objects.filter(titulo=titulo).exists():
+                    print(row)
+                    livro = Livros(id=livros_id, titulo=titulo, autor=autor, preco=preco, ano_publicacao=ano_publicacao,usuarioDono=usuarioDono)
+                    livro.save()
                     backupLivrosCSV.atualizaBackupLivros()
             print("backup livros extraidos do import com sucesso!")
             print("livros únicos adicionados ao banco de dados: " + str(num))
@@ -180,7 +188,8 @@ def extrair_livros_temp(max_file):
                 preco = row[4]
                 usuarioDono = row[5]
                 usuario_id = row[6]
-                backupLivrosCSV.importLivroTemp(livros_id, titulo, autor, preco, ano_publicacao, usuarioDono, usuario_id, operacao)
+                if not livros_id == "livro_id":
+                    backupLivrosCSV.importLivroTemp(livros_id, titulo, autor, preco, ano_publicacao, usuarioDono, usuario_id, operacao)
             print("backup livros temp extraidos do import com sucesso!")
             print("arquivos temp não são adicionados ao banco de dados")
     except Exception as e:

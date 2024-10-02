@@ -223,7 +223,7 @@ def importLivroTemp(livros_id, titulo, autor, preco, ano_publicacao, usuarioDono
         # Adicionar os detalhes do livro alterado ao backup temporário existente
         with open(file_path, mode='a', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
-            if livros_id:
+            if livros_id and titulo and autor and preco and ano_publicacao and usuarioDono and usuario_id and operacao:
                 writer.writerow(['livro_id', 'titulo', 'autor', 'ano_publicacao', 'preco', 'usuarios_donos', operacao])
                 writer.writerow([livros_id, titulo, autor, ano_publicacao, preco, usuarioDono,usuario_id])
                 print(f"Backup alterado: {backupTempName}")
