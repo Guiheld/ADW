@@ -29,3 +29,25 @@ def verifcar_integridade_banco_de_dados():
                 analises.delete()
     except Exception as e:
         logging.error("e")
+
+# Verifica se o arquivo possui uma header
+# param: path do arquivo
+# param: delimitador que separa os dados
+def verificar_header(path_arquivo, delimiter):
+    try:
+        # Lê as primeiras linhas do arquivo sem atribuir a um DataFrame
+        with open(path_arquivo, 'r') as file:
+            first_line = file.readline().strip()
+            second_line = file.readline().strip()
+        first_line_values = first_line.split(delimiter)
+        if second_line:
+            second_line_values = second_line.split(delimiter)
+            if len(first_line_values) == len(second_line_values):
+                return True  # O arquivo tem um cabeçalho
+            else:
+                return False  # O arquivo não tem um cabeçalho
+
+        return True
+    except Exception as e:
+        logging.error(f"Erro ao verificar cabeçalho: {str(e)}")
+        return False  # Em caso de erro, assume que não há cabeçalho
