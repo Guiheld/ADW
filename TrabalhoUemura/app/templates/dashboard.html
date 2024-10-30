@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Nova Analise de Dados{% endblock %}</title>
+    <title>{% block title %}Dashboard{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -38,7 +38,7 @@
     {% block content %}
     <div class="container">
         <div class="header">
-            <h2>Nova Analise de Dados</h2>
+            <h2>Dashboard -  Analise de Dados Web</h2>
             <div class="header-actions">
                 <a href="{% url 'minhas_analises' %}" class="btn btn-create">Voltar</a>
                 <a href="{% url 'home' %}" class="btn btn-back">Sair</a>

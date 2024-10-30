@@ -37,5 +37,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     #--------------------------------------------
     path('upload_dados/', importarDados.upload_dados, name='upload_dados'),
+    path('analisar/<int:id>', importarDados.analisar_dado, name='analisar'),
 
 ]

@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .models import Usuarios
+from .dadosManager.dadosManagerUtils import verifcar_integridade_banco_de_dados
+from .models import Usuarios, analise
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse
@@ -65,12 +66,15 @@ def login_view(request):
 
 @login_required(login_url='/auth/login/')
 def minhas_analises(request):
+    verifcar_integridade_banco_de_dados()
     usuario = Usuarios.objects.get(id_usuario=request.user.id)
-    return render(request, 'minhas_analises.html', {'usuario' : usuario})
+    analises = analise.objects.filter(id_usuario=usuario.id_usuario)
+    return render(request, 'minhas_analises.html', {'usuario' : usuario, 'analises' : analises})
 
 
 @login_required(login_url='/auth/login/')
 def dashboard(request):
+    verifcar_integridade_banco_de_dados()
     usuario = Usuarios.objects.get(id_usuario=request.user.id)
     usuarios = Usuarios.objects.all
     return render(request, 'dashboard.html', {'usuario' : usuario, 'usuarios' : usuarios})

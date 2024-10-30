@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 
+from .analisaDados import analisar_dado_completo
 from .dadosManagerUtils import testar_dir_existe_ou_criar, salvar_arquivo_dir_existe
 from ..models import Usuarios, analise
 
@@ -45,7 +46,10 @@ def upload_dados(request):
     if request.method == 'POST' and request.FILES:
         for file_key in request.FILES:
             dado_importado = request.FILES[file_key]
-            if dado_importado.name.endswith('.csv') or dado_importado.name.endswith('.tsv') or dado_importado.name.endswith('.txt'):
+
+            if dado_importado.name.endswith('.csv') or dado_importado.name.endswith('.tsv') or dado_importado.name.endswith('.txt') or dado_importado.name.endswith('.xlsx')\
+                    or dado_importado.name.endswith('.xls') or dado_importado.name.endswith('.json') or dado_importado.name.endswith('.parquet'):
+
                 salvar_arquivo_dir_existe(diretorioSalvar, dado_importado)
 
                 usuario_id = Usuarios.objects.get(id_usuario=request.user.id)
@@ -55,12 +59,19 @@ def upload_dados(request):
                 nova_analise.save()
 
                 logging.info(f"Arquivo {dado_importado.name} importado com sucesso")
-                processar_dados_importado(nova_analise)
             else:
-                logging.error(f"Arquivo {dado_importado.name} não é um CSV, TSV ou txt")
+                logging.error(f"Arquivo {dado_importado.name} não é suportado")
                 continue
     return redirect('dashboard')
 
-def processar_dados_importado(analise):
-    logging.info("arquivo chegou ao processamento, path: " + analise.path_arquivo)
+def analisar_dado(request, id):
+    logging.info(f"importarDados.analisar_dado()")
+    if request.method == 'GET':
+        if id != 0 or id.isdigit():
+            analise_obj = analise.objects.get(id_analise=id)
+            analisar_dado_completo(analise_obj)
+        else:
+            logging.error("Nenhuma análise foi selecionada")
+    return redirect('dashboard')
+    #return redirect('visualizar_analise') ainda nao feito
 

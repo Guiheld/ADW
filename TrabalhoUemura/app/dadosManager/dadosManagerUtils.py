@@ -2,7 +2,8 @@ import logging
 import os
 
 from django.core.files.storage import FileSystemStorage
-
+from ..models import Usuarios, analise
+from django.conf import settings
 
 # classe com funcoes frequentemente usadas
 
@@ -18,4 +19,13 @@ def salvar_arquivo_dir_existe(dir_salvar, file):
     fs = FileSystemStorage(location=dir_salvar)
     fs.save(file.name, file)
 
-#def buscar_path():
+def verifcar_integridade_banco_de_dados():
+    logging.info("Verificando se as analises cadastradas estao importadas localmente")
+    try:
+        todas_analise = analise.objects.all()
+        for analises in todas_analise:
+            if not os.path.isfile(analises.path_arquivo):
+                logging.warn(f"Arquivo {analises.path_arquivo} não encontrado local, cadastro deletado")
+                analises.delete()
+    except Exception as e:
+        logging.error("e")
