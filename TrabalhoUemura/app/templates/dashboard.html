@@ -27,15 +27,6 @@
             });
         });
 
-        function downloadFiles() {
-            const link = document.createElement('a');
-            link.href = `/download_backup/`;
-            link.download = 'backup.zip';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
         function closeModal() {
             var modal = document.getElementById("purchaseModal");
             modal.style.display = "none";
