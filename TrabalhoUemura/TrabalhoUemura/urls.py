@@ -23,7 +23,7 @@ from django.contrib import admin
 from django.urls import path, include
 from app import views
 
-from app.backupManager import exportarDadosCSV, importarDadosCSV
+from app.backupManager import importarDadosCSV
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,18 +33,9 @@ urlpatterns = [
     path('auth/cadastro/', views.cadastro, name='cadastro'),
     path('auth/login/', views.login_view, name='login'),
     #--------------------------------------------
-    path('meus_livros/', views.meus_livros, name='meus_livros'),
+    path('minhas_analises/', views.minhas_analises, name='minhas_analises'),
     path('dashboard/', views.dashboard, name='dashboard'),
     #--------------------------------------------
-    path('cadastrar_livro/', views.cadastrar_livro, name='cadastrar_livro'),
-    path('emprestar_livro/<int:id>/', views.emprestar_livro, name='emprestar_livro'),         #processa o emprestimo
-    path('emprestar_livro_modal/', views.emprestar_livro_modal, name='emprestar_livro_modal'),#carrega o modal
-    path('cadastrar_livro/editar_preco_livro/<int:id>/', views.editar_preco_livro, name='editar_preco_livro'),
-    path('dashboard/deletar_livro/<int:id>', views.deletar_livro, name='deletar_livro'),
-    #--------------------------------------------
-    path('buscar/', views.buscar_livros_por_autor, name='buscar_livros_por_autor'),
-    #--------------------------------------------
-    path('download_backup/', exportarDadosCSV.download_backup_files, name='download_backup'),
-    path('upload_backup/', importarDadosCSV.upload_backup, name='upload_backup'),
+    path('upload_dados/', importarDadosCSV.upload_dados, name='upload_dados'),
 
 ]

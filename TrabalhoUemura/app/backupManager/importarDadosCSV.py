@@ -9,9 +9,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 
-from ..backupManager import backupLivrosCSV
-from ..backupManager import backupUsuariosCSV
-from ..models import Usuarios, Livros
+from ..models import Usuarios
 
 diretorioSalvar = os.path.join(settings.BASE_DIR, "app", "backupManager", "dadosImportados")
 
@@ -37,7 +35,7 @@ def limpar_dir_imports():
                 print(f"Falha ao deletar {file_path}. Razão: {e}")
         print("diretorio limpado!")
 
-def upload_backup(request):
+def upload_dados(request):
     if not 'backup_file' in request.FILES or not request.FILES['backup_file']:
         print("Erro: Nenhum arquivo foi carregado!")
         return redirect('dashboard')

@@ -22,14 +22,3 @@ class Usuarios(models.Model):
 
     def __str__(self):
         return self.nome
-
-class Livros(models.Model):
-
-    titulo = models.CharField(max_length=250)
-    autor = models.TextField(max_length=250)
-    preco = models.DecimalField(max_digits=10, decimal_places=2)
-    ano_publicacao = models.DateField()
-    usuarioDono = models.ForeignKey(Usuarios, on_delete=models.SET_NULL, null=True, related_name='usuarioDono')
-
-    def __str__(self):
-        return self.titulo

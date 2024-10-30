@@ -22,24 +22,6 @@
                 }
             });
 
-            // AJAX Script para o formulário de busca
-            $("#searchForm").submit(function(event) {
-                event.preventDefault();
-                var query = $("#autor").val();
-                $.ajax({
-                    url: "{% url 'buscar_livros_por_autor' %}",
-                    data: {
-                        'autor': query
-                    },
-                    success: function(data) {
-                        $("#resultados").html(data);
-                    },
-                    error: function(xhr, errmsg, err) {
-                        $("#resultados").html("<div class='alert alert-danger' role='alert'>Ocorreu um erro ao fazer a busca. Tente novamente.</div>");
-                    }
-                });
-            });
-
             $("#uploadBtn").click(function() {
                 $("#uploadModal").show();
             });
@@ -54,22 +36,6 @@
             document.body.removeChild(link);
         }
 
-        function openModal(livroId) {
-            var modal = document.getElementById("purchaseModal");
-            var modalContent = document.getElementById("modalContent");
-
-            // Fazer uma solicitação AJAX para carregar o conteúdo do modal
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '{% url "emprestar_livro_modal" %}?livro_id=' + livroId, true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    modalContent.innerHTML = xhr.responseText;
-                    modal.style.display = "block";
-                }
-            };
-            xhr.send();
-        }
-
         function closeModal() {
             var modal = document.getElementById("purchaseModal");
             modal.style.display = "none";
@@ -81,74 +47,28 @@
     {% block content %}
     <div class="container">
         <div class="header">
-            <h2>Dashboard - Biblioteca</h2>
+            <h2>Nova Analise de Dados</h2>
             <div class="header-actions">
-                <a href="{% url 'meus_livros' %}" class="btn btn-create">Voltar</a>
+                <a href="{% url 'minhas_analises' %}" class="btn btn-create">Voltar</a>
                 <a href="{% url 'home' %}" class="btn btn-back">Sair</a>
             </div>
         </div>
         <br>
         <div class="btn-container">
-            <button id="modalBtn" class="btn-primary">Abrir Pesquisa de Autor</button>
-            <button class="btn-primary" onclick="downloadFiles()">Exportar dados</button>
-            <button id="uploadBtn" class="btn-primary">Importar dados</button>
-        </div>
-        <!-- Formulário de Pesquisa por autor no Modal -->
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <form id="searchForm" class="modal-form">
-                    <input type="text" name="autor" id="autor" placeholder="Buscar por autor">
-                    <button type="submit">Buscar</button>
-                </form>
-                <!-- Exibir Resultados da Pesquisa -->
-                <div id="resultados"></div>
-            </div>
+            <button id="uploadBtn" class="btn-primary">upload dados</button>
         </div>
         <!-- Formulário de Upload no Modal -->
         <div id="uploadModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <form action="{% url 'upload_backup' %}" method="post" enctype="multipart/form-data" class="modal-form">
+                <form action="{% url 'upload_dados' %}" method="post" enctype="multipart/form-data" class="modal-form">
                     {% csrf_token %}
                     <input type="file" name="backup_file" accept=".zip">
                     <button type="submit">Upload</button>
                 </form>
             </div>
         </div>
-        <h3>{{ usuario.nome }}</h3>
-        <h5>Todos os livros:</h5>
-        <div class="task-list">
-            <div class="task-list-inner">
-                {% for livro in livros %}
-                <div class="task-card">
-                    <div class="task-header">
-                        <strong>Título: {{ livro.titulo }}</strong>
-                    </div>
-                    <div class="task-body">
-                        <p>Autor: {{ livro.autor }}</p>
-                        <p>Taxa de emprestimo: R${{ livro.preco }}</p>
-                        <p>Ano de publicação: {{ livro.ano_publicacao }}</p>
-                        {% if livro.usuarioDono %}
-                        <p>Emprestado por: {{ livro.usuarioDono }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="task-footer">
-                        <button class="btn btn-edit" onclick="openModal('{{ livro.id }}')">Emprestar</button>
-                        <form method="POST" action="{% url 'deletar_livro' livro.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-delete">Excluir</button>
-                        </form>
-                        <button class="btn btn-edit" onclick="window.location.href='{% url 'editar_preco_livro' livro.id %}'">Editar Preço</button>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="no-tasks">
-                    Não há livros para mostrar.
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+        <h3>Autor da analise: {{ usuario.nome }}</h3>
     </div>
 
     <!-- Modal Pop-up -->
