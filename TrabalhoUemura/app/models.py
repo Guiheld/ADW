@@ -20,5 +20,12 @@ class Usuarios(models.Model):
     email = models.EmailField(max_length=250)
     senha = models.CharField(max_length=100)  # ARMAZENAR SENHA EM HASH
 
-    def __str__(self):
-        return self.nome
+class analise(models.Model):
+    id_analise = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+    nome_analise = models.CharField(max_length=100)
+    path_arquivo = models.CharField(max_length=100)
+
+
+def __str__(self):
+    return self.nome

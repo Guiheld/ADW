@@ -23,7 +23,7 @@ from django.contrib import admin
 from django.urls import path, include
 from app import views
 
-from app.dadosManager import importarDadosCSV
+from app.dadosManager import importarDados
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,6 +36,6 @@ urlpatterns = [
     path('minhas_analises/', views.minhas_analises, name='minhas_analises'),
     path('dashboard/', views.dashboard, name='dashboard'),
     #--------------------------------------------
-    path('upload_dados/', importarDadosCSV.upload_dados, name='upload_dados'),
+    path('upload_dados/', importarDados.upload_dados, name='upload_dados'),
 
 ]
