@@ -28,4 +28,4 @@ INSTRUÇÕES:
 
     Este projeto foi feito usando o sistema já feito em um trabalho anterior, o seu repositorio é: https://github.com/Guiheld/gerenciamentoLivraria. Partes como login, cadastro etc são legados deste sistema.
 
-  Anotação: Criar um sistema web que possa analisar um dataset qualquer a partir de seus headers, e podendo também puxar uma api para ter uma análise padrão
+  Anotação: mostrar no visualizar analise, as headers, algumas medias etc

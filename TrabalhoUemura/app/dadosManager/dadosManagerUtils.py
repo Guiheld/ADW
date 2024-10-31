@@ -8,6 +8,7 @@ from django.conf import settings
 import plotly.express as px
 from django.shortcuts import render
 from plotly.io import to_html
+import numpy as np
 
 # classe com funcoes frequentemente usadas
 
@@ -55,3 +56,37 @@ def verificar_header(path_arquivo, delimiter):
     except Exception as e:
         logging.error(f"Erro ao verificar cabeçalho: {str(e)}")
         return False  # Em caso de erro, assume que não há cabeçalho
+
+def mover_colunas_ano_para_data(df, colunas_numericas, colunas_categoricas, colunas_data):
+    """
+    Move colunas que representam anos (nome 'year', 'Year' ou 'ano') para a lista de colunas de data.
+    Não faz conversão de tipos.
+    Deveria, mas o pandas fica muito maluco com essa ideia pelo jeito.. enfim, funcao do diabo
+    com certeza outra parte do codigo vai transformar em dateTime antes de chegar na analise de machine learning
+
+    :param df: DataFrame com os dados
+    :param colunas_numericas: Lista de colunas numéricas identificadas
+    :param colunas_categoricas: Lista de colunas categóricas identificadas
+    :param colunas_data: Lista de colunas de datas identificadas
+    """
+    # Identifica colunas que possam representar anos/datas
+    possiveis_colunas_data = [col for col in df.columns if col.lower() in ['year', 'ano']]
+    logging.warning(f"coluna que representa ano, fora do datetime format encontrada")
+
+    for coluna in possiveis_colunas_data:
+        # Move a coluna para colunas_data se não estiver lá
+        if coluna not in colunas_data:
+            colunas_data.append(coluna)  # Adiciona à lista de datas
+            logging.info(f"Coluna '{coluna}' movida para colunas_data")
+
+        # Remove da lista de colunas numéricas ou categóricas, se aplicável
+        if coluna in colunas_numericas:
+            print(colunas_numericas)
+            colunas_numericas.remove(coluna)
+            logging.info(f"Coluna '{coluna}' removida de colunas_numericas")
+        if coluna in colunas_categoricas:
+            colunas_categoricas.remove(coluna)
+            logging.info(f"Coluna '{coluna}' removida de colunas_categoricas")
+
+    return colunas_numericas, colunas_categoricas, colunas_data
+

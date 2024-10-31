@@ -1,4 +1,5 @@
 import logging
+from cgi import print_form
 
 import pandas as pd
 
@@ -8,15 +9,15 @@ import plotly.express as px
 from django.shortcuts import render
 from plotly.io import to_html
 
-from .graficosOperacoes import tentar_criar_graficos
+from .graficosOperacoes import separar_e_gerar_graficos
 
 
 def analisar_dado_completo(analise_obj):
     logging.info("Iniciando análise completa para o arquivo: " + analise_obj.path_arquivo)
     try:
         df = tranformar_em_dataFrame(analise_obj)
-        print(df)
         df = df.dropna() # retirna qualquer linha com dado vazio
+        df = retirar_coluna_id(df)
         return df
     except Exception as e:
         logging.error(f"Error reading analise CSV: {str(e)}")
@@ -51,11 +52,19 @@ def tranformar_em_dataFrame(dado_importado):
     else:
         raise ValueError("Extensão do arquivo não suportada, ou headers nao presentes")
 
+def retirar_coluna_id(df):
+    coluna_id = df.columns[0]
+    if pd.api.types.is_integer_dtype(df[coluna_id]) and df[coluna_id].is_unique:
+        logging.info(f"coluna que representa o id foi retirada")
+        df = df.drop(columns=[coluna_id])
+    else:
+        logging.info("Nenhuma coluna de ID foi removida.")
+    return df
 
 # Recebe um data Frame e cria um grafico dependendo do tipo de coluna presente
 # param: Data Frame
 # return: grafico em html
 def criar_grafico(df):
     graficos_html = []
-    graficos_html = tentar_criar_graficos(graficos_html, df)
+    graficos_html = separar_e_gerar_graficos(graficos_html, df)
     return graficos_html
