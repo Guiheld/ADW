@@ -15,7 +15,7 @@ def separar_e_gerar_graficos(graficos_html, df):
     logging.info(f"separar_e_gerar_graficos - " + str(len(colunas_numericas)) + " colunas numericas encontradas")
     colunas_categoricas = df.select_dtypes(include=['category', 'object']).columns.tolist()
     logging.info(f"separar_e_gerar_graficos - " + str(len(colunas_categoricas)) + " colunas categoricas encontradas")
-    colunas_data = df.select_dtypes(include=['datetime']).columns
+    colunas_data = df.select_dtypes(include=['datetime']).columns.tolist()
     logging.info(f"separar_e_gerar_graficos - " + str(len(colunas_data)) + " colunas de datas encontradas")
 
     colunas_numericas, colunas_categoricas, colunas_data = mover_colunas_ano_para_data(df, colunas_numericas, colunas_categoricas, colunas_data)
