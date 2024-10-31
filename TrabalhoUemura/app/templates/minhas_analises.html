@@ -19,9 +19,8 @@
           </div>
           <div class="task-body">
             <p>Autor da analise: {{ usuario.nome }}</p>
-            <p>Nome da analise: R${{ analise.nome_analise }}</p>
-            <p>DEBUG path do arquivo: {{ analise.path_arquivo}}</p>
-            <p>DEBUG id analise: {{ analise.id_analise}}</p>
+            <p>Nome da analise: {{ analise.nome_analise }}</p>
+            <p>id analise: {{ analise.id_analise}}</p>
           </div>
           <div class="task-footer">
             <button class="btn btn-edit" onclick="window.location.href='{% url 'analisar' analise.id_analise %}'">Ver Analise</button>

@@ -54,20 +54,33 @@
                 <span class="close">&times;</span>
                 <form action="{% url 'upload_dados' %}" method="post" enctype="multipart/form-data" class="modal-form">
                     {% csrf_token %}
-                    <input type="file" name="backup_file" accept=".zip">
+                    <input type="file" name="backup_file">
                     <button type="submit">Upload</button>
                 </form>
             </div>
         </div>
-        <h3>Autor da analise: {{ usuario.nome }}</h3>
-    </div>
-
-    <!-- Modal Pop-up -->
-    <div id="purchaseModal" class="modal">
-        <div class="modal-content" id="modalContent">
-            <!-- O conteúdo do modal será carregado aqui através do AJAX -->
+        <h3>Todas as analises</h3>
+        <div class="task-list">
+                <div class="task-list-inner">
+                    {% for analise in analises %}
+                    <div class="task-card">
+                        <div class="task-header">
+                            <strong>Nome da Analise: {{ analise.nome_analise }}</strong>
+                        </div>
+                        <div class="task-body">
+                            <p>ID da analise: {{ analise.id_analise }}</p>
+                        </div>
+                        <div class="task-footer">
+                            <button class="btn btn-edit" onclick="window.location.href='{% url 'analisar' analise.id_analise %}'">Ver Analise</button>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="no-tasks">
+                        Não há analises para mostrar.
+                    </div>
+                    {% endfor %}
+                </div>
         </div>
-        <span class="close" onclick="closeModal()">&times;</span>
     </div>
     {% endblock %}
 </body>

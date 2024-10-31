@@ -64,14 +64,3 @@ def upload_dados(request):
                 continue
     return redirect('dashboard')
 
-def analisar_dado(request, id):
-    logging.info(f"importarDados.analisar_dado()")
-    if request.method == 'GET':
-        if id != 0 or id.isdigit():
-            analise_obj = analise.objects.get(id_analise=id)
-            analisar_dado_completo(analise_obj)
-        else:
-            logging.error("Nenhuma análise foi selecionada")
-    return redirect('dashboard')
-    #return redirect('visualizar_analise') ainda nao feito
-

@@ -1,9 +1,13 @@
 import logging
 import os
 
+import pandas as pd
 from django.core.files.storage import FileSystemStorage
 from ..models import Usuarios, analise
 from django.conf import settings
+import plotly.express as px
+from django.shortcuts import render
+from plotly.io import to_html
 
 # classe com funcoes frequentemente usadas
 

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
+from .dadosManager.analisaDados import analisar_dado_completo, criar_grafico
 from .dadosManager.dadosManagerUtils import verifcar_integridade_banco_de_dados
 from .models import Usuarios, analise
 from django.contrib.auth.decorators import login_required
@@ -77,4 +78,25 @@ def dashboard(request):
     verifcar_integridade_banco_de_dados()
     usuario = Usuarios.objects.get(id_usuario=request.user.id)
     usuarios = Usuarios.objects.all
-    return render(request, 'dashboard.html', {'usuario' : usuario, 'usuarios' : usuarios})
+    analises = analise.objects.all
+    return render(request, 'dashboard.html', {'usuario' : usuario, 'usuarios' : usuarios, 'analises' : analises})
+
+
+@login_required(login_url='/auth/login/')
+def analisar_dado(request, id):
+    if id > 0:
+        try:
+            analise_obj = analise.objects.get(id_analise=id)
+            df = analisar_dado_completo(analise_obj)
+            if df is not None:
+                graficos_html = criar_grafico(df)  # Supondo que criar_grafico retorne uma lista
+                graficos_html = list(filter(lambda x: x is not None, graficos_html))  # Retira possíveis gráficos nulos
+                if len(graficos_html) > 0:  # Usando len para verificar se há gráficos
+                    return render(request, 'visualizar_analise.html', {'graficos_html': graficos_html, 'analise_obj' : analise_obj})
+                else:
+                    return HttpResponse("Não foi possível gerar os gráficos", status=500)
+        except analise.DoesNotExist:
+            return HttpResponse("Análise não encontrada", status=404)
+        except Exception as e:  # Captura outras exceções
+            return HttpResponse("Ocorreu um erro ao processar a análise", status=500)
+    return HttpResponse("ID inválido", status=400)

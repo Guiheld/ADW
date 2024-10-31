@@ -1,0 +1,21 @@
+{% load static %}
+{% block content %}
+  <link rel="stylesheet" href="{% static 'css/visualizar_analises.css' %}">
+  <div class="container">
+    <div class="header">
+      <h2>Dados Analisados</h2>
+      <div class="header-actions">
+        <a href="{% url 'minhas_analises' %}" class="btn btn-create">Voltar</a>
+        <a href="{% url 'home' %}" class="btn btn-back">Sair</a>
+      </div>
+    </div>
+    <h4 align="center">Bem-vindo {{ usuario.nome }}!</h4>
+    <br>
+    <h1>Gráfico Gerado com Dados do Dataset "{{ analise_obj.nome_analise }}".</h1>
+    <div class="task-list">
+      {% for grafico in graficos_html %}
+        <div>{{ grafico|safe }}</div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
