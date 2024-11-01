@@ -23,7 +23,6 @@ from django.contrib import admin
 from django.urls import path, include
 from app import views
 
-from app.dadosManager import importarDados
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,7 +36,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     #--------------------------------------------
     path('nova_analise/', views.nova_analise, name='nova_analise'),
-    path('upload_dados/', importarDados.upload_dados, name='upload_dados'),
     path('analisar/<int:id>', views.analisar_dado, name='analisar'),
 
     ]

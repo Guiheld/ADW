@@ -8,6 +8,7 @@ class Forms:
 
 class formulario_nova_analise(forms.ModelForm):
     OPCAO_CHOICES = [
+        ('null', 'Selecione uma opção'),
         ('SF_Salaries', 'SF Salaries.csv'),
         ('opcao2', 'Opção 2'),
         ('opcao3', 'Opção 3'),

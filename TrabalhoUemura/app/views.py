@@ -1,3 +1,5 @@
+import os
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -6,18 +8,20 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .dadosManager.analisaDados import analisar_dado_completo, criar_grafico
-from .dadosManager.dadosManagerUtils import verifcar_integridade_banco_de_dados
-from .dadosManager.importarDados import get_SFSALARIES
+from .dadosManager.analisaDados import criar_grafico, analisar_dataset
 from .formulario import formulario_nova_analise
 from .models import Usuarios, analise
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse
+from django.conf import settings
 
 # ANOTAÇÕES - Guilherme
 # Arquivo responsável por definir as regras de negócio do app. Vulgo ACTION.
 # E onde está o html para ser exibido depois.
+
+SF_SALARIES = os.path.join(settings.BASE_DIR, "app", "dadosManager", "dadosImportados", "Salaries.csv")
+
 
 #----------------------------------------------------------------------------------------------------
 #   Processo de autenticacao
@@ -69,7 +73,6 @@ def login_view(request):
 
 @login_required(login_url='/auth/login/')
 def minhas_analises(request):
-    verifcar_integridade_banco_de_dados()
     usuario = Usuarios.objects.get(id_usuario=request.user.id)
     analises = analise.objects.filter(id_usuario_autor=usuario.id_usuario)
     return render(request, 'minhas_analises.html', {'usuario' : usuario, 'analises' : analises})
@@ -77,7 +80,6 @@ def minhas_analises(request):
 
 @login_required(login_url='/auth/login/')
 def dashboard(request):
-    verifcar_integridade_banco_de_dados()
     usuario = Usuarios.objects.get(id_usuario=request.user.id)
     usuarios = Usuarios.objects.all
     analises = analise.objects.all
@@ -94,7 +96,7 @@ def nova_analise(request):
             analise = form.save(commit=False)
             analise.id_usuario_autor = Usuarios.objects.get(id_usuario=request.user.id)
             if analise.nome_analise == 'SF_Salaries':
-                analise.path_arquivo = get_SFSALARIES()
+                analise.path_arquivo = SF_SALARIES
                 analise.save()
                 return redirect('minhas_analises')
     else:
@@ -104,12 +106,12 @@ def nova_analise(request):
 
 @login_required(login_url='/auth/login/')
 def analisar_dado(request, id):
-    if id > 0:
+    if id >= 0:
         try:
             analise_obj = analise.objects.get(id_analise=id)
-            df = analisar_dado_completo(analise_obj)
+            df = analisar_dataset(analise_obj)
             if df is not None:
-                graficos_html = criar_grafico(df)  # Supondo que criar_grafico retorne uma lista
+                graficos_html = criar_grafico(df)
                 graficos_html = list(filter(lambda x: x is not None, graficos_html))  # Retira possíveis gráficos nulos
                 if len(graficos_html) > 0:  # Usando len para verificar se há gráficos
                     return render(request, 'visualizar_analise.html', {'graficos_html': graficos_html, 'analise_obj' : analise_obj})
