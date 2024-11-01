@@ -20,8 +20,10 @@ from django.conf import settings
 # Arquivo responsável por definir as regras de negócio do app. Vulgo ACTION.
 # E onde está o html para ser exibido depois.
 
-SF_SALARIES = os.path.join(settings.BASE_DIR, "app", "dadosManager", "dadosImportados", "Salaries.csv")
-
+# Path dos datasets
+sf_salaries_path = os.path.join(settings.BASE_DIR, "app", "dadosManager", "dadosImportados", "Salaries.csv")
+salary_dataset_with_extra_features_path = os.path.join(settings.BASE_DIR, "app", "dadosManager", "dadosImportados", "Salary_Dataset_with_Extra_Features.csv")
+datascience_salaries_2024_path = os.path.join(settings.BASE_DIR, "app", "dadosManager", "dadosImportados", "DataScience_salaries_2024.csv")
 
 #----------------------------------------------------------------------------------------------------
 #   Processo de autenticacao
@@ -96,7 +98,15 @@ def nova_analise(request):
             analise = form.save(commit=False)
             analise.id_usuario_autor = Usuarios.objects.get(id_usuario=request.user.id)
             if analise.nome_analise == 'SF_Salaries':
-                analise.path_arquivo = SF_SALARIES
+                analise.path_arquivo = sf_salaries_path
+                analise.save()
+                return redirect('minhas_analises')
+            elif analise.nome_analise == 'Salary_Dataset_with_Extra_Features':
+                analise.path_arquivo = salary_dataset_with_extra_features_path
+                analise.save()
+                return redirect('minhas_analises')
+            elif analise.nome_analise == 'DataScience_salaries_2024':
+                analise.path_arquivo = datascience_salaries_2024_path
                 analise.save()
                 return redirect('minhas_analises')
     else:
@@ -112,11 +122,7 @@ def analisar_dado(request, id):
             df = analisar_dataset(analise_obj)
             if df is not None:
                 graficos_html = criar_grafico(df)
-                graficos_html = list(filter(lambda x: x is not None, graficos_html))  # Retira possíveis gráficos nulos
-                if len(graficos_html) > 0:  # Usando len para verificar se há gráficos
-                    return render(request, 'visualizar_analise.html', {'graficos_html': graficos_html, 'analise_obj' : analise_obj})
-                else:
-                    return HttpResponse("Não foi possível gerar os gráficos", status=500)
+                return render(request, 'visualizar_analise.html', {'graficos_html': graficos_html, 'analise_obj' : analise_obj})
         except analise.DoesNotExist:
             return HttpResponse("Análise não encontrada", status=404)
         except Exception as e:  # Captura outras exceções

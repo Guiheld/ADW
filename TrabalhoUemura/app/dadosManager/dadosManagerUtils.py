@@ -23,3 +23,13 @@ def retirar_coluna_id(df):
         logging.info("Nenhuma coluna de ID foi removida.")
     return df
 
+def tranformar_em_dataFrame(analise_obj):
+    logging.info(f"transformando dataset em dataframe pandas")
+    try:
+        df = pd.read_csv(analise_obj.path_arquivo, low_memory=False)
+        if analise_obj.nome_analise is 'SF_Salaries':
+            df = retirar_coluna_id(df)
+        return df
+    except Exception as e:
+        logging.error(f"Erro ao tentar transformar o dataset em data frame pandas: {str(e)}")
+        return None

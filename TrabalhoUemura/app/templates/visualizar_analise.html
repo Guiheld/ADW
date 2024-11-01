@@ -1,25 +1,21 @@
 {% load static %}
 {% block content %}
-<div class="container">
-  <h2 align="center">Nova Análise</h2>
-  <form method="post" class="analise-form">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="{{ form.nome_analise.id_for_label }}">Nome da Análise (*):</label>
-      {{ form.nome_analise }}
+  <link rel="stylesheet" href="{% static 'css/visualizar_analises.css' %}">
+  <div class="container">
+    <div class="header">
+      <h2>Dados Analisados</h2>
+      <div class="header-actions">
+        <a href="{% url 'minhas_analises' %}" class="btn btn-create">Voltar</a>
+        <a href="{% url 'home' %}" class="btn btn-back">Sair</a>
+      </div>
     </div>
-
-    <div id="descricao-opcao" class="descricao-detalhada">
-      <p>Selecione um dataset acima para realizar uma nova analise de dados.</p>
-      </p> <a href="https://www.kaggle.com/" target="_blank">Origem dos datasets acima</a>
+    <h4 align="center">Bem-vindo {{ usuario.nome }}!</h4>
+    <br>
+    <h1>Gráfico Gerado com Dados do Dataset "{{ analise_obj.nome_analise }}".</h1>
+    <div class="task-list">
+      {% for grafico in graficos_html %}
+        <div>{{ grafico|safe }}</div>
+      {% endfor %}
     </div>
-
-    <div class="form-actions">
-      <button type="submit" class="btn btn-save">Salvar</button>
-      <a href="{% url 'dashboard' %}" class="btn btn-cancel">Cancelar</a>
-    </div>
-  </form>
-</div>
-<link rel="stylesheet" href="{% static 'css/nova_analise.css' %}">
-<script src="{% static 'js/nova_analise.js' %}"></script>
+  </div>
 {% endblock %}
