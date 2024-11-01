@@ -1,0 +1,20 @@
+{% load static %}
+{% block content %}
+  <div class="container">
+    <h2 align="center">Nova Análise</h2>
+    <form method="post" class="analise-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="{{ form.nome_analise.id_for_label }}">Nome da Análise (*):</label>
+        {{ form.nome_analise }}
+      </div>
+
+      <p class="observacao" align="left">Preencha todos os campos obrigatórios para criar uma nova análise.</p>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-save">Salvar</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-cancel">Cancelar</a>
+      </div>
+    </form>
+  </div>
+  <link rel="stylesheet" href="{% static 'css/nova_analise.css' %}">
+{% endblock %}

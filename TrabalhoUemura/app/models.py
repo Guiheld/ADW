@@ -22,7 +22,7 @@ class Usuarios(models.Model):
 
 class analise(models.Model):
     id_analise = models.AutoField(primary_key=True)
-    id_usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+    id_usuario_autor = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
     nome_analise = models.CharField(max_length=100)
     path_arquivo = models.CharField(max_length=100)
 

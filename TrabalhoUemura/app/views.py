@@ -8,6 +8,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .dadosManager.analisaDados import analisar_dado_completo, criar_grafico
 from .dadosManager.dadosManagerUtils import verifcar_integridade_banco_de_dados
+from .dadosManager.importarDados import get_SFSALARIES
+from .formulario import formulario_nova_analise
 from .models import Usuarios, analise
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -63,13 +65,13 @@ def login_view(request):
             return render(request, 'auth/login.html')
 
 #----------------------------------------------------------------------------------------------------
-#   Analise de Dados
+# Paginas Principais
 
 @login_required(login_url='/auth/login/')
 def minhas_analises(request):
     verifcar_integridade_banco_de_dados()
     usuario = Usuarios.objects.get(id_usuario=request.user.id)
-    analises = analise.objects.filter(id_usuario=usuario.id_usuario)
+    analises = analise.objects.filter(id_usuario_autor=usuario.id_usuario)
     return render(request, 'minhas_analises.html', {'usuario' : usuario, 'analises' : analises})
 
 
@@ -80,6 +82,24 @@ def dashboard(request):
     usuarios = Usuarios.objects.all
     analises = analise.objects.all
     return render(request, 'dashboard.html', {'usuario' : usuario, 'usuarios' : usuarios, 'analises' : analises})
+
+#----------------------------------------------------------------------------------------------------
+# Operacoes
+
+@login_required(login_url='/auth/login/')
+def nova_analise(request):
+    if request.method == 'POST':
+        form = formulario_nova_analise(request.POST)
+        if form.is_valid():
+            analise = form.save(commit=False)
+            analise.id_usuario_autor = Usuarios.objects.get(id_usuario=request.user.id)
+            if analise.nome_analise == 'SF_Salaries':
+                analise.path_arquivo = get_SFSALARIES()
+                analise.save()
+                return redirect('minhas_analises')
+    else:
+        form = formulario_nova_analise()
+    return render(request, 'nova_analise.html', {'form': form})
 
 
 @login_required(login_url='/auth/login/')

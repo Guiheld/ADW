@@ -15,6 +15,10 @@ from .dadosManagerUtils import testar_dir_existe_ou_criar, salvar_arquivo_dir_ex
 from ..models import Usuarios, analise
 
 diretorioSalvar = os.path.join(settings.BASE_DIR, "app", "dadosManager", "dadosImportados")
+SF_SALARIES = os.path.join(settings.BASE_DIR, "app", "dadosManager", "dadosImportados", "Salaries.csv")
+
+def get_SFSALARIES():
+    return SF_SALARIES
 
 # Configure the logging
 logging.basicConfig(

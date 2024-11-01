@@ -4,35 +4,6 @@
 <head>
     <title>{% block title %}Dashboard{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Script para controlar abertura e fechamento do modal
-            $("#modalBtn").click(function() {
-                $("#myModal").show();
-            });
-
-            $(".close").click(function() {
-                $(this).closest(".modal").hide();
-            });
-
-            $(window).click(function(event) {
-                if ($(event.target).hasClass("modal")) {
-                    $(event.target).hide();
-                }
-            });
-
-            $("#uploadBtn").click(function() {
-                $("#uploadModal").show();
-            });
-        });
-
-        function closeModal() {
-            var modal = document.getElementById("purchaseModal");
-            modal.style.display = "none";
-        }
-
-    </script>
 </head>
 <body>
     {% block content %}
@@ -46,18 +17,7 @@
         </div>
         <br>
         <div class="btn-container">
-            <button id="uploadBtn" class="btn-primary">upload dados</button>
-        </div>
-        <!-- Formulário de Upload no Modal -->
-        <div id="uploadModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <form action="{% url 'upload_dados' %}" method="post" enctype="multipart/form-data" class="modal-form">
-                    {% csrf_token %}
-                    <input type="file" name="backup_file">
-                    <button type="submit">Upload</button>
-                </form>
-            </div>
+            <a href="{% url 'nova_analise' %}" class="btn-primary">Nova Analise</a>
         </div>
         <h3>Todas as analises</h3>
         <div class="task-list">

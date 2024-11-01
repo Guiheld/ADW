@@ -36,6 +36,7 @@ urlpatterns = [
     path('minhas_analises/', views.minhas_analises, name='minhas_analises'),
     path('dashboard/', views.dashboard, name='dashboard'),
     #--------------------------------------------
+    path('nova_analise/', views.nova_analise, name='nova_analise'),
     path('upload_dados/', importarDados.upload_dados, name='upload_dados'),
     path('analisar/<int:id>', views.analisar_dado, name='analisar'),
 
